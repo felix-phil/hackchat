@@ -41,7 +41,7 @@ const reducer = (state=initialState, action ) => {
 				functionToHandleChat: payload.functionToHandleChat || state.functionToHandleChat,
 				functionToHandleCall: payload.functionToHandleCall || state.functionToHandleCall,
 				functionToHandleVideo: payload.functionToHandleVideo || state.functionToHandleVideo,
-				functionToHandleProfileInfo: payload.functionToHandleChat || state.functionToHandleProfileInfo
+				functionToHandleProfileInfo: payload.functionToHandleProfileInfo || state.functionToHandleProfileInfo
 			}
 		case HIDE_PORTAL_IMAGE:
 			return {

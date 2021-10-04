@@ -6,7 +6,7 @@ export const dropTable = (tableName) => {
         db.transaction(tx => {
             tx.executeSql(`
                 DROP TABLE IF EXISTS ${tableName}
-            `,[], ()=>resolve(), (_, err)=> reject(err))
+            `,[], (_, res)=>resolve(res), (_, err)=> reject(err))
         })
     })
     return promise

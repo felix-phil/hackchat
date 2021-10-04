@@ -29,7 +29,7 @@ const CustomAppbar = ({ navigation, options, route }) => {
     }
     return (
         <Appbar.Header>
-            {previous ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
+            {previous && !searchField ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
             {!searchField && <Appbar.Content title={options.headerTitle} />}
             {searchField &&
                 <View style={styles.textInpCont}>
