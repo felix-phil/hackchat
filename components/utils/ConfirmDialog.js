@@ -11,7 +11,7 @@ const ConfirmDialog = (props) => {
                         <Dialog.Content>
                             <Paragraph>{props.content}</Paragraph>
                         </Dialog.Content>
-                        <Dialog.Actions>
+                        <Dialog.Actions style={{ justifyContent: props.justifyAction ? props.justifyAction: "flex-end" }}>
                             <Button onPress={props.hideDialog}>{props.cancelText}</Button>
                             <Button onPress={() => {
                                 props.hideDialog();

@@ -1,36 +1,71 @@
-import React, { useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
 import { Appbar, Menu, TextInput, useTheme, } from "react-native-paper"
-import { View, StyleSheet } from "react-native"
+import { View, StyleSheet, BackHandler } from "react-native"
 import { MaterialIcons } from '@expo/vector-icons';
-import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import * as authActions from "../../../store/actions/auth";
 import * as contactActions from "../../../store/actions/contacts";
 import * as msgActions from "../../../store/actions/messages";
+import { openContacts, openWebUrl, shareText } from "../../../constants/linking";
 
-const CustomAppbar = ({ navigation, options, route }) => {
+const CustomAppbar = ({ navigation, options, route, searchOption, otherOptions }) => {
     const previous = navigation.canGoBack()
     const [visible, setVisible] = useState(false)
     const [searchField, setSearchField] = useState(false)
     const [searchValue, setSearchValue] = useState("")
-    const routeName = getFocusedRouteNameFromRoute(route)
     const dispatch = useDispatch()
     const theme = useTheme();
-
+    const searchSubmitExecutor = options && options.onHeaderSearch ? options.onHeaderSearch : () => { }
+    const searchValueChangeExecutor = options && options.onHeaderSearchValueChange ? options.onHeaderSearchValueChange : () => { }
     const openMenu = () => setVisible(true);
     const closeMenu = () => setVisible(false);
 
     const openSearchField = () => setSearchField(true)
     const closeSearchField = () => setSearchField(false)
 
+    useEffect(() => {
+        navigation.addListener('beforeRemove', (e) => {
+            if (!searchField) {
+                return
+            }
+            e.preventDefault()
+            setSearchField(false)
+        })
+        return () => {
+            navigation.removeListener('beforeRemove')
+        }
+    }, [navigation, searchField, setSearchField])
+
     const onSubmitHandler = () => {
-        console.log(searchValue)
+        searchSubmitExecutor(searchValue)
         setSearchField(false)
+    }
+    const onChangeTextHandler = (text) => {
+        setSearchValue(text)
+        searchValueChangeExecutor(text)
+    }
+    const inviteFriend = async() => {
+        try{
+            await shareText("We can use HackChat to messsage and call each other for free. Download at https://hackchat.com/download/", 
+            { title: "Invite a friend via...", url: "https://hackchat.com/download/" });
+        }catch(err){
+            dispatch(msgActions.setMessage(err.message, "error"))
+        }
+    }
+    const openContactApp = async() => {
+        try{
+            await openContacts()
+        }
+        catch(err){
+            dispatch(msgActions.setMessage(err.message, "error"))
+        }
     }
     return (
         <Appbar.Header>
-            {previous && !searchField ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
-            {!searchField && <Appbar.Content title={options.headerTitle} />}
+            {previous && !searchField && <Appbar.BackAction onPress={() => {
+                navigation.goBack()
+            }} />}
+            {!searchField && <Appbar.Content title={options.headerTitle} subtitle={options.headerSubtitle} />}
             {searchField &&
                 <View style={styles.textInpCont}>
                     <TextInput value={searchValue}
@@ -42,14 +77,16 @@ const CustomAppbar = ({ navigation, options, route }) => {
                         theme={{
                             colors: { text: "white" }
                         }}
+                        autoFocus={true}
+                        focusable={searchField}
                         returnKeyType="search"
-                        onChangeText={(text) => setSearchValue(text)}
+                        onChangeText={onChangeTextHandler}
                         style={styles.textInp}
                         left={<TextInput.Icon
                             name="arrow-left"
                             color="white"
                             size={24}
-                            onPress={closeSearchField} />}
+                            onPress={() => { closeSearchField(); setSearchValue("") }} />}
                         right={<TextInput.Icon
                             color="white"
                             name="close"
@@ -60,8 +97,8 @@ const CustomAppbar = ({ navigation, options, route }) => {
                     />
                 </View>
             }
-            {!searchField && <Appbar.Action icon={({ size, color, direction }) => (<MaterialIcons name="search" size={size} color={color} />)} color="white" onPress={openSearchField} size={20} />}
-            {!searchField ? (
+            {!searchField && searchOption && <Appbar.Action icon={({ size, color }) => (<MaterialIcons name="search" size={size} color={color} />)} color="white" onPress={openSearchField} size={20} />}
+            {!searchField && otherOptions && (
                 <Menu
                     visible={visible}
                     onDismiss={closeMenu}
@@ -71,19 +108,25 @@ const CustomAppbar = ({ navigation, options, route }) => {
                     {
                         route.name === "Contacts" &&
                         <>
-                            <Menu.Item onPress={() => { console.log('Invite was pressed'); closeMenu(); }} title="Invite a friend" />
-                            <Menu.Item onPress={() => { console.log('Contacts was pressed'); closeMenu(); }} title="Contacts" />
+                            <Menu.Item onPress={async () => {
+                                closeMenu();
+                                inviteFriend()
+                            }} title="Invite a friend" />
                             <Menu.Item onPress={async() => {
                                 closeMenu();
-                                try{
+                                openContactApp()
+                            }} title="Contacts" />
+                            <Menu.Item onPress={async () => {
+                                closeMenu();
+                                try {
                                     await dispatch(authActions.syncContacts());
                                     await dispatch(contactActions.setContacts())
-                                }catch(err){
+                                } catch (err) {
                                     dispatch(msgActions.setMessage(err.message, "error"))
                                     console.log(err)
                                 }
                             }} title="Refresh" />
-                            <Menu.Item onPress={() => { console.log('Help was pressed'); closeMenu(); }} title="Help" />
+                            <Menu.Item onPress={() => { openWebUrl('https://hackchat.com/help'); closeMenu(); }} title="Help" />
                         </>
                     }
                     {
@@ -95,7 +138,7 @@ const CustomAppbar = ({ navigation, options, route }) => {
                         </React.Fragment>
                     }
                 </Menu>
-            ) : null}
+            )}
         </Appbar.Header>
     )
 }

@@ -1,30 +1,41 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, KeyboardAvoidingView, TouchableOpacity } from "react-native";
-import { Title, Subheading, TextInput } from "react-native-paper";
+import { View, StyleSheet, SafeAreaView, ScrollView, KeyboardAvoidingView } from "react-native";
+import { Subheading, useTheme, Title, Text } from "react-native-paper";
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from 'react-native-confirmation-code-field';
 import { Button, List, Divider } from "react-native-paper";
 import * as authActions from "../../store/actions/auth"
 import { useDispatch, useSelector } from "react-redux"
 import * as messageActions from '../../store/actions/messages';
+import DefaultAppbar from "../../components/main/headers/DefaultHeader";
 
 const CELL_COUNT = 6;
 
 const RESEND_OTP_TIME_LIMIT = 90;
 
-const Verify = ({ navigation }) => {
+const Verify = ({ navigation, route }) => {
+	const theme = useTheme()
 	const dispatch = useDispatch()
 	const phone = useSelector(state => state.auth.phone)
+	const  {formattedPhoneNumber}  = route.params || "+2348171551089"
+	// console.log(route)
 	const [value, setValue] = useState('');
 	let resendOtpTimerInterval;
 	const [resendButtonDisabledTime, setResendButtonDisabledTime] = useState(RESEND_OTP_TIME_LIMIT,);
 
+	useEffect(() => {
+		navigation.setOptions({
+			headerTitle: "Verify " + formattedPhoneNumber
+		})
+	}, [navigation])
 	//Stop backbutton
 	useEffect(() => {
 		navigation.addListener('beforeRemove', (e) => {
 			e.preventDefault()
 		})
+		return () => {
+			navigation.removeListener('beforeRemove')
+		}
 	}, [navigation])
-
 	//to start resent otp option 
 	const startResendOtpTimer = () => {
 		if (resendOtpTimerInterval) {
@@ -49,9 +60,9 @@ const Verify = ({ navigation }) => {
 		console.log('todo: Resend OTP');
 	};
 	//declarations for input field 
-
 	const ref = useBlurOnFulfill({ value, cellCount: CELL_COUNT });
 	const [props, getCellOnLayoutHandler] = useClearByFocusCell({ value, setValue, });
+
 	//start timer on screen on launch 
 	useEffect(() => {
 		startResendOtpTimer();
@@ -92,11 +103,9 @@ const Verify = ({ navigation }) => {
 		<SafeAreaView style={styles.root}>
 			<ScrollView>
 				<KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "height" : "padding"} style={{ flex: 1 }} >
-					<View style={styles.center}>
-						<Title>Verify {phone}</Title>
-					</View>
 					<View style={styles.sub}>
-						<Subheading style={{ textAlign: "center", lineHeight: 17 }}>Waiting to verify SMS sent to {phone}</Subheading>
+						<Subheading style={{ textAlign: "center"}}>Waiting to verify SMS sent to</Subheading>
+						<Title> {formattedPhoneNumber} </Title>
 					</View>
 					<View>
 						<CodeField ref={ref}
@@ -111,7 +120,7 @@ const Verify = ({ navigation }) => {
 								<View onLayout={getCellOnLayoutHandler(index)}
 									key={index}
 									style={[styles.cellRoot, isFocused && styles.focusCell]}>
-									<Text style={styles.cellText}>
+									<Text style={{...styles.cellText, color: theme.colors.text}}>
 										{symbol || (isFocused ? <Cursor /> : null)}
 									</Text>
 								</View>)}
@@ -134,6 +143,9 @@ const Verify = ({ navigation }) => {
 			</ScrollView>
 		</SafeAreaView>
 	)
+}
+export const screenOptions = {
+	header: (props) => <DefaultAppbar {...props} alignText="center" />
 }
 const styles = StyleSheet.create({
 	center: {
@@ -183,7 +195,6 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 	},
 	cellText: {
-		color: '#000',
 		fontSize: 28,
 		textAlign: 'center',
 	},

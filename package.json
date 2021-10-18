@@ -1,14 +1,14 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
     "web": "expo start --web",
     "eject": "expo eject"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.15.0",
+    "@react-native-community/netinfo": "6.0.0",
     "@react-navigation/drawer": "^6.0.1",
     "@react-navigation/material-top-tabs": "^6.0.1",
     "@react-navigation/native": "^6.0.1",
@@ -19,31 +19,43 @@
     "expo-camera": "~11.2.2",
     "expo-constants": "~11.0.1",
     "expo-contacts": "~9.2.5",
+    "expo-dev-client": "^0.6.0",
     "expo-font": "~9.2.1",
     "expo-notifications": "~0.12.3",
+    "expo-react-native-fast-image": "^2.0.0",
+    "expo-splash-screen": "~0.11.2",
     "expo-sqlite": "~9.2.1",
     "expo-status-bar": "~1.0.4",
+    "expo-updates": "~0.8.1",
     "formik": "^2.2.9",
     "lottie-react-native": "4.0.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
+    "react-native": "0.63.4",
     "react-native-confirmation-code-field": "^7.1.0",
     "react-native-dotenv": "^3.2.0",
+    "react-native-fast-image": "^8.5.11",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-image-pan-zoom": "^2.1.12",
     "react-native-pager-view": "5.0.12",
     "react-native-paper": "^4.9.2",
     "react-native-reanimated": "^2.2.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
+    "react-native-super-grid": "^4.1.3",
     "react-native-tab-view": "^3.1.1",
+    "react-native-unimodules": "0.14.10",
     "react-native-web": "~0.13.12",
+    "react-native-webview": "11.6.2",
     "react-redux": "^7.2.4",
     "redux": "^4.1.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "socket.io-client": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"
   },
-  "private": true
+  "private": true,
+  "name": "hack",
+  "version": "1.0.0"
 }

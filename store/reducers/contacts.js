@@ -1,8 +1,8 @@
-import { HIDE_PORTAL_IMAGE, SET_CONTACTS, SHOW_PORTAL_IMAGE } from "../actions/contacts"
+import { FILTER_CONTACTS, HIDE_PORTAL_IMAGE, SET_CONTACTS, SHOW_PORTAL_IMAGE } from "../actions/contacts"
 
 const initialState = {
 	contacts: [],
-
+	filteredContacts: [],
 	showPortalImage: false,
 	routeName: "Contacts",
 	profileName: "",
@@ -29,7 +29,8 @@ const reducer = (state=initialState, action ) => {
 		case SET_CONTACTS:
             return {
                 ...state,
-                contacts: payload
+                contacts: payload,
+				filteredContacts: payload
             }
 		case SHOW_PORTAL_IMAGE:
 			return {
@@ -48,6 +49,21 @@ const reducer = (state=initialState, action ) => {
 				...state,
 				showPortalImage: false,
 				routeName: "Contacts"
+			}
+		case FILTER_CONTACTS:
+			const regex = RegExp(payload, "i")
+			const availableContacts = [...state.contacts]
+			let newFilteredContact
+			const filtered = availableContacts.filter(con => con.name.toLowerCase().startsWith(payload.toLowerCase()) || regex.test(con.phoneNumber))
+			
+			if (payload.trim() !== "") {
+				newFilteredContact = filtered
+			} else {
+				newFilteredContact = availableContacts
+			}
+			return {
+				...state,
+				filteredContacts: newFilteredContact
 			}
 		default: return state
 	}

@@ -18,23 +18,35 @@ const PortalImage = (props) => {
                 onDismiss={() => {
                     dispatch(conAction.hidePortalImage())
                 }}
-                
+                style={styles.modal}
                 contentContainerStyle={styles.containerStyle}>
                 <Card>
-                    <Card.Title style={{ backgroundColor: "transparent" }} title={portalOption.profileName} titleStyle={{ fontWeight: "normal", fontSize: 18 }} />
+                    <Card.Title style={{ backgroundColor: "transparent" }} title={portalOption.profileName} />
                     <TouchableRipple onPress={() => { dispatch(conAction.hidePortalImage()); navigation.navigate("FullScreenImage", { imageUrl: host + portalOption.profileImageUrl, title: portalOption.profileName }) }}>
-                        <Card.Cover source={{ uri: host + portalOption.profileImageUrl }} />
+                        <Card.Cover resizeMode="cover" source={{ uri: host + portalOption.profileImageUrl }} style={{ width: "100%" }} />
                     </TouchableRipple>
                     <Card.Actions style={{ justifyContent: "space-evenly", alignItems: "center" }} >
-                        <IconButton color={theme.colors.primary} icon="android-messages" onPress={portalOption.functionToHandleChat} />
+                        <IconButton color={theme.colors.primary} icon="android-messages" onPress={() => {
+                            dispatch(conAction.hidePortalImage())
+                            portalOption.functionToHandleChat()
+                        }} />
                         {
                             portalOption.routeName === "Contacts" &&
                             <>
-                                <IconButton color={theme.colors.primary} icon="phone" onPress={portalOption.functionToHandleCall} />
-                                <IconButton color={theme.colors.primary} icon="video" onPress={portalOption.functionToHandleVideo} />
+                                <IconButton color={theme.colors.primary} icon="phone" onPress={() => {
+                                    dispatch(conAction.hidePortalImage())
+                                    portalOption.functionToHandleCall()
+                                }} />
+                                <IconButton color={theme.colors.primary} icon="video" onPress={() => {
+                                    dispatch(conAction.hidePortalImage())
+                                    portalOption.functionToHandleVideo()
+                                }} />
                             </>
                         }
-                        <IconButton color={theme.colors.primary} icon="information-outline" onPress={portalOption.functionToHandleProfileInfo} />
+                        <IconButton color={theme.colors.primary} icon="information-outline" onPress={() => {
+                            dispatch(conAction.hidePortalImage())
+                            portalOption.functionToHandleProfileInfo()
+                        }} />
                     </Card.Actions>
                 </Card>
             </Modal>
@@ -45,6 +57,9 @@ const PortalImage = (props) => {
 export default PortalImage
 
 const styles = StyleSheet.create({
+    modal: {
+        flex: 1
+    },
     containerStyle: {
         backgroundColor: 'black',
         // padding: 10,

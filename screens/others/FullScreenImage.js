@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
+import ImageViewer from '../../components/images/ImageViewer'
 
 const FullScreenImage = ({route, navigation}) => {
     const {imageUrl, title } = route.params
@@ -8,7 +9,7 @@ const FullScreenImage = ({route, navigation}) => {
     }, [navigation])
     return (
         <View style={styles.screen}>
-            <Image style={{ width: "100%", height: "50%"}} source={{ uri: imageUrl }} />
+            <ImageViewer url={imageUrl}/>
         </View>
     )
 }

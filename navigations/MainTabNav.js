@@ -7,10 +7,12 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Portal, FAB, useTheme } from "react-native-paper"
 import { useIsFocused, getFocusedRouteNameFromRoute } from "@react-navigation/native"
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { View } from 'react-native';
 
 const Tab = createMaterialTopTabNavigator();
 
 const MainTabs = ({ route, navigation }) => {
+  // console.log(options)
   const isFocused = useIsFocused()
   const [showFab, setShowFab] = useState(true)
   const [showSmallFab, setShowSmallFab] = useState(false)
@@ -66,7 +68,7 @@ const MainTabs = ({ route, navigation }) => {
         tabBarLabelStyle: {
           fontWeight: "bold"
         },
-        tabBarActiveTintColor: theme.colors.primary
+        tabBarActiveTintColor: theme.colors.primary,
       }}
         backBehavior="initialRoute" >
         <Tab.Screen name="Camera" component={CameraTab} options={({ route }) => ({
@@ -75,43 +77,49 @@ const MainTabs = ({ route, navigation }) => {
           tabBarVisible: getTabBarVisibily(route),
         })}
         />
-        <Tab.Screen name="CHATS" component={HomeTab} />
+        <Tab.Screen name="CHATS" navigation={navigation} component={HomeTab} />
         <Tab.Screen name="STATUS" component={StatusTab} />
         <Tab.Screen name="CALLS" component={HistoryTab} />
       </Tab.Navigator>
       {showFab && <Portal>
-        {showSmallFab ?
+        
+        <View
+          style={{
+            position: 'absolute',
+            bottom: "5%",
+            right: "5%",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            alignItems: 'center'
+            // padding: 10
+          }}
+        >
+          {showSmallFab &&
+            <FAB
+              visible={isFocused}
+              icon={smallIcon}
+              small
+              style={{
+                backgroundColor: theme.mode === "adaptive" ? theme.colors.placeholder : theme.colors.surface,
+                marginVertical: "30%"
+              }}
+              
+              color={theme.mode === "adaptive" ? theme.colors.text : theme.colors.primary}
+              onPress={fabClickedHandler}
+
+            />
+          }
           <FAB
             visible={isFocused}
-            icon={smallIcon}
-            small={true}
+            icon={icon}
+            small={false}
             style={{
-              position: 'absolute',
-              bottom: "17%",
-              right: "13%",
-              backgroundColor: theme.colors.backdrop
+              backgroundColor: theme.colors.primary
             }}
             color="white"
             onPress={fabClickedHandler}
-
           />
-          :
-          null
-        }
-        <FAB
-          visible={isFocused}
-          icon={icon}
-          small={false}
-          style={{
-            position: 'absolute',
-            bottom: "7%",
-            right: "10%",
-            backgroundColor: theme.colors.primary
-          }}
-          color="white"
-          onPress={fabClickedHandler}
-
-        />
+        </View>
       </Portal>}
     </React.Fragment>
 

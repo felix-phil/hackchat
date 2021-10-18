@@ -3,27 +3,29 @@ import Contact from "../../models/contacts"
 export const SET_CONTACTS = "SET_CONTACTS"
 export const SHOW_PORTAL_IMAGE = "SHOW_PORTAL_IMAGE"
 export const HIDE_PORTAL_IMAGE = "HIDE_PORTAL_IMAGE"
+export const FILTER_CONTACTS = "FILTER_CONTACTS"
 
 export const setContacts = () => {
     return async dispatch => {
-        try{
+        try {
             const contacts = await Contact.findAll()
-            dispatch({type: SET_CONTACTS, payload: contacts.rows._array})
-        }catch(error){
+            dispatch({ type: SET_CONTACTS, payload: contacts.rows._array })
+        } catch (error) {
             throw error
         }
     }
 }
-export const showPortalImage = (contact, routeName) => {
+export const filterContact = (filter) => {
+    return { type: FILTER_CONTACTS, payload: filter }
+}
+export const showPortalImage = (contact, routeName, { functionToHandleChat }) => {
     return {
         type: SHOW_PORTAL_IMAGE,
         payload: {
             routeName: routeName,
             profileName: contact.name,
             profileImageUrl: contact.imageUrl,
-            functionToHandleChat: () => {
-                console.log("From Action")
-            }
+            functionToHandleChat: functionToHandleChat
         }
     }
 }

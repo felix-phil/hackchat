@@ -3,7 +3,7 @@ const initialState = {
 	token: null,
 	refresh: null,
 	_id: null,
-	phone: null,
+	phone: "",
 	status: "",
 	deviceId: null,
 	firstName: null,

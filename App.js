@@ -8,6 +8,8 @@ import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/
 import merge from "deepmerge";
 import { PreferencesContext } from './constants/PreferencesContext';
 import Contact from "./models/contacts"
+import Chat from "./models/chat"
+import { dropTable } from './helpers/db';
 
 export default function App() {
   const [isThemeDark, setIsThemeDark] = React.useState(false);
@@ -50,6 +52,16 @@ export default function App() {
     }).catch(err => {
       console.log(err)
     })
+    Chat.init().then(() => {
+      console.log("Chat DB initialized successfully")
+    }).catch(err => {
+      console.log(err)
+    })
+    // dropTable('chat').then(()=>{
+    //   console.log("Chat DB dropped successfully")
+    // }).catch(err => {
+    //   console.log(err)
+    // })
   }, [])
 
   return (
