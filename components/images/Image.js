@@ -1,27 +1,34 @@
 import React, { useState } from "react"
 import { StyleSheet, TouchableOpacity, Image as NativeImage, ToastAndroid } from "react-native"
 import { ActivityIndicator } from "react-native-paper"
+import FastImage from "react-native-fast-image";
 
 const Image = ({ containerStyle, url, onPress, onLoad, style, loaderSize, ...restProps }) => {
-  const [loaded, setLoaded] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleLoading = (event) => {
-    setLoaded(true)
-    // console.log(event.nativeEvent)
-    onLoad && onLoad(event)
-  }
+  // const handleLoading = (event) => {
+  //   setLoaded(true)
+  //   // console.log(event.nativeEvent)
+  //   onLoad && onLoad(event)
+  // }
   return (
     <TouchableOpacity style={[styles.base, containerStyle]} onPress={onPress} disabled={!onPress}>
       <NativeImage
         style={{...styles.base, ...style}}
-        onLoad={handleLoading}
-        source={{ uri: url }}
-        {...restProps}
+        onLoad={e => onLoad(e)}
+        onLoadStart={()=>setLoading(true)}
+        onLoadEnd={()=> setLoading(false)}
+
+        source={{
+           uri: url,
+           priority: FastImage.priority.high,
+         }}
+        // {...restProps}
         onError={() => {
             ToastAndroid.show("Download failed", ToastAndroid.SHORT)
         }}
       />
-      {!loaded && (
+      {loading && (
         <ActivityIndicator  style={styles.loader} size={loaderSize || "large"} />
       )}
     </TouchableOpacity>

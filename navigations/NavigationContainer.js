@@ -31,13 +31,15 @@ const NavContainer = (props) => {
 	const fetchDevId = useCallback(
 		async () => {
 			try {
+				// console.log(netInfo)
 				const token = await fetchDeviceId()
 				// console.log(token)
 				dispatch(authActions.setDeviceId(token))
 			} catch (error) {
-				if (!netInfo.isConnected) {
-					error.message = "Internet connection not available"
-				}
+				// if (!netInfo.isConnected) {
+				// 	error.message = "Internet connection not available"
+				// }
+				
 				console.log(error)
 				ToastAndroid.show(error.message, ToastAndroid.SHORT)
 			}

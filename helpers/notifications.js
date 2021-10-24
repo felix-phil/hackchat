@@ -10,6 +10,7 @@ export const fetchDeviceId = async () => {
     } else {
         try {
             if (Constants.isDevice) {
+                let experienceId = `@felix-phil/HackChat`
                 const { status: existingStatus } = await Notifications.getPermissionsAsync();
                 let finalStatus = existingStatus;
                 if (existingStatus !== "granted") {
@@ -20,7 +21,8 @@ export const fetchDeviceId = async () => {
                     alert('Failed ti get push token notifications')
                     throw new Error("Notifications permission not granted")
                 }
-                const token = await Notifications.getExpoPushTokenAsync()
+                const token = await Notifications.getExpoPushTokenAsync({ experienceId: experienceId })
+                // console.log(token)
                 fetchedId = token.data
             }
         } catch (error) {

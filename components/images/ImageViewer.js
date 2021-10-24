@@ -9,6 +9,7 @@ const ImageViewer = ({ url, navigation }) => {
     const screenHeight = Dimensions.get("window").height
 
     const calculateImageSize = ({ nativeEvent }) => {
+        console.log(nativeEvent)
         let width = nativeEvent.source.width
         let height = nativeEvent.source.height
         // If image width is bigger than screen => zoom ratio will be image width

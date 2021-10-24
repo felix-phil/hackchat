@@ -7,7 +7,7 @@ import PageActivity from '../../components/utils/PageActivity'
 import * as contactActions from "../../store/actions/contacts"
 import * as messageActions from "../../store/actions/messages"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
-import { openContacts } from '../../constants/linking'
+import { addContact } from '../../constants/linking'
 
 const ContactScreen = ({ navigation, route }) => {
     const contacts = useSelector(state => state.contact.filteredContacts)
@@ -47,16 +47,16 @@ const ContactScreen = ({ navigation, route }) => {
             functionToHandleChat: toChat.bind(this, contact)
         }))
     }
-    if (loading) {
-        return <PageActivity />
-    }
     const addNewContact = async() => {
         try{
             // Do this after ejecting
-            await openContacts()
+            await addContact()
         }catch(err){
             console.log(err)
         }
+    }
+    if (loading) {
+        return <PageActivity />
     }
     return (
         <React.Fragment>

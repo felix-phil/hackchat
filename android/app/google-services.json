@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "82242855237",
+    "project_id": "hackchat-1bc73",
+    "storage_bucket": "hackchat-1bc73.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:82242855237:android:df882d151f9bcece679e2c",
+        "android_client_info": {
+          "package_name": "com.hackchat.hack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "82242855237-4s6sg4bdo6cjegg0ru9uqcnvfhuls3s6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwiYYyPvfCaZABH5XGCp1YzV7AACadHYc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "82242855237-4s6sg4bdo6cjegg0ru9uqcnvfhuls3s6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

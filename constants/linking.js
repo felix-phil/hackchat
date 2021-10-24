@@ -57,3 +57,19 @@ export const presentContactForm = async(id) => {
         alert(error.message)
     }
 }
+export const addContact = async(id) => {
+    try {
+        const { status } = await Contacts.requestPermissionsAsync();
+        if (status === 'granted') {
+            const contact = {
+                [Contacts.Fields.FirstName]: 'Bird',
+                [Contacts.Fields.LastName]: 'Man',
+                [Contacts.Fields.Company]: 'Young Money',
+              };
+           await Contacts.addContactAsync(contact)
+        console.log(contact)
+        }
+    } catch (error) {
+        alert(error.message)
+    }
+}
