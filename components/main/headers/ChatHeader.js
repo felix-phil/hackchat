@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Appbar, Menu, TextInput, useTheme, Avatar } from "react-native-paper"
-import { View, StyleSheet, Dimensions } from "react-native"
+import { Appbar, Menu, TextInput, useTheme, Avatar, TouchableRipple, IconButton } from "react-native-paper"
+import { View, StyleSheet, Dimensions, Text } from "react-native"
 import { useDispatch } from "react-redux";
 import * as authActions from "../../../store/actions/auth";
 import * as contactActions from "../../../store/actions/contacts";
@@ -51,18 +51,17 @@ const ChatHeader = ({ navigation, options, route }) => {
     }
     return (
         <Appbar.Header>
-            {
-                previous && !searchField &&
-                <>
-                    <Appbar.BackAction color="white"  onPress={() => {
-                        navigation.goBack()
-                    }} />
-                    <Appbar.Action icon={({ size, color }) => <Avatar.Image size={size} source={{ uri: host + options.avatarImageUrl }} />} color="white" size={35} />
-                </>
+                {
+                    previous && !searchField &&
+                    <Appbar.BackAction color="white" onPress={()=> navigation.goBack()} />
+                }
+                {
+                    !searchField &&
+                    <Appbar.Action icon={({ size, color }) => <Avatar.Image size={size} source={{ uri: host + options.avatarImageUrl }} />
+                    } color="white" size={35} />
+                }
 
-            }
-
-            {!searchField && <Appbar.Content title={options.headerTitle} subtitle={options.headerSubtitle} onPress={()=> console.log('View full profile')} />}
+            {!searchField && <Appbar.Content title={options.headerTitle} subtitle={options.headerSubtitle} onPress={() => console.log('View full profile')} />}
             {searchField &&
                 <View style={styles.textInpCont}>
                     <TextInput value={searchValue}
@@ -105,7 +104,7 @@ const ChatHeader = ({ navigation, options, route }) => {
                     }>
 
                     {
-                        contact ?
+                        contact && contact.name ?
                             <Menu.Item onPress={() => { console.log('Invite was pressed'); closeMenu(); }} title="View contact" />
                             :
                             <Menu.Item onPress={() => { console.log('Handle Media'); closeMenu(); }} title="Add to contacts" />
@@ -114,14 +113,14 @@ const ChatHeader = ({ navigation, options, route }) => {
                     <Menu.Item onPress={() => { openSearchField(); closeMenu(); }} title="Search" />
                     <Menu.Item onPress={() => { console.log('Handle Mute'); closeMenu(); }} title="Mute notifications" />
                     <Menu.Item onPress={() => { console.log('Handle Wallpaper'); closeMenu(); }} title="Wallpaper" />
-                    <Menu.Item onPress={() => { closeMenu(); openMoreMenu(); }} title="More" icon="menu-right"  />
+                    <Menu.Item onPress={() => { closeMenu(); openMoreMenu(); }} title="More" icon="menu-right" />
                 </Menu>
             )
             }
             {!searchField && <Menu
                 visible={moreVisible}
                 onDismiss={closeMoreMenu}
-                anchor={{x: Dimensions.get('screen').width - 2, y: (5/100)*Dimensions.get('screen').height }}
+                anchor={{ x: Dimensions.get('screen').width - 2, y: (5 / 100) * Dimensions.get('screen').height }}
             >
                 <Menu.Item onPress={() => { console.log('Handle Report'); closeMoreMenu(); }} title="Report" />
                 <Menu.Item onPress={() => { console.log('Handle Block'); closeMoreMenu(); }} title="Block" />

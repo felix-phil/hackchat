@@ -122,8 +122,8 @@ const CustomAppbar = ({ navigation, options, route, searchOption, otherOptions }
                                     await dispatch(authActions.syncContacts());
                                     await dispatch(contactActions.setContacts())
                                 } catch (err) {
-                                    dispatch(msgActions.setMessage(err.message, "error"))
                                     console.log(err)
+                                    dispatch(msgActions.setMessage(err.message, "error"))
                                 }
                             }} title="Refresh" />
                             <Menu.Item onPress={() => { openWebUrl('https://hackchat.com/help'); closeMenu(); }} title="Help" />

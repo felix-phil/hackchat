@@ -3,8 +3,11 @@ import { webSocketHost } from "../constants/endpoints";
 let socket;
 
 export const init = (token) => {
+    if(socket){
+        return socket
+    }
     socket = OpenSocket(webSocketHost, {
-        query: { token: token }
+        query: { token: token },
     })
     return socket
 }

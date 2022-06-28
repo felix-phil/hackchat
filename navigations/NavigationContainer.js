@@ -39,7 +39,7 @@ const NavContainer = (props) => {
 				// if (!netInfo.isConnected) {
 				// 	error.message = "Internet connection not available"
 				// }
-				
+
 				console.log(error)
 				ToastAndroid.show(error.message, ToastAndroid.SHORT)
 			}
@@ -81,10 +81,6 @@ const NavContainer = (props) => {
 				await SplashScreen.preventAutoHideAsync()
 				await fetchDevId()
 				await tryAuthenticate()
-				if (isAuth) {
-					const Socket = socket.init(token)
-				}
-				// const Socket = socket.init()
 				await new Promise(resolve => setTimeout(resolve, 500));
 			} catch (e) {
 				console.log(e)
@@ -92,8 +88,33 @@ const NavContainer = (props) => {
 				setAppIsReady(true)
 			}
 		},
-		[fetchDevId, tryAuthenticate, isAuth, token],
+		[fetchDevId, tryAuthenticate],
 	)
+	const initializeSocket = useCallback(
+		() => {
+			let Socket;
+			if (isAuth) {
+				Socket = socket.init(token)
+				Socket.on('connect', () => {
+					console.log('Socket connected')
+					Socket.emit('NOT_OFFLINE_ACTIONS', {})
+				})
+				Socket.on('disconnect', reason => {
+					console.log('Socket disconnected')
+				})
+			}
+		},
+		[isAuth, token],
+	)
+	useEffect(() => {
+		initializeSocket()
+		return () => {
+			// if(Socket){
+			// 	Socket.disconnect()
+			// }
+		}
+	}, [initializeSocket])
+
 	useEffect(() => {
 		prepare()
 	}, [prepare])

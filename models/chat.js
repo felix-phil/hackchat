@@ -1,7 +1,7 @@
 import db from "../helpers/db"
 
 class Chat {
-    constructor({ creator, recipientName, recipientNumber, roomId, recipientImage, lastMessageId, lastMessageText, contactId, id }) {
+    constructor({ creator, recipientName, recipientNumber, roomId, recipientImage, lastMessageId, lastMessageText, lastMessageDate, contactId, unreadMessageCount, id }) {
         this.id = id ? id : null
         this.creator = creator
         this.recipientName = recipientName
@@ -10,7 +10,9 @@ class Chat {
         this.roomId = roomId
         this.lastMessageId = lastMessageId
         this.lastMessageText = lastMessageText
+        this.lastMessageDate = lastMessageDate
         this.contactId = contactId
+        this.unreadMessageCount = unreadMessageCount ? unreadMessageCount : 0
     }
 
     static init() {
@@ -27,7 +29,9 @@ class Chat {
                             roomId VARCHAR(255) NOT NULL,
                             lastMessageId INTEGER NOT NULL,
                             lastMessageText TEXT NOT NULL,
-                            contactId INTEGER NULL
+                            lastMessageDate TEXT NOT NULL,
+                            contactId INTEGER NULL,
+                            unreadMessageCount INTEGER NOT NULL
                         )
                     `,
                     [],
@@ -41,12 +45,12 @@ class Chat {
     save() {
         const promise = new Promise((resolve, reject) => {
             db.transaction(tx => {
-                if (!id) {
+                if (!this.id) {
                     tx.executeSql(
                         `
-                            INSERT INTO chat (creator, recipientName, recipeintNumber, recipientImage, roomId, lastMessageId, lastMessageText, contactId)
-                                VALUES (?, ?, ?, ?, ?, ?, ?)
-                        `, [this.creator, this.recipientName, this.recipientNumber, this.recipientImage, this.roomId, this.lastMessageId, this.lastMessageText, this.contactId],
+                            INSERT INTO chat (creator, recipientName, recipientNumber, recipientImage, roomId, lastMessageId, lastMessageText, lastMessageDate,contactId, unreadMessageCount)
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        `, [this.creator, this.recipientName, this.recipientNumber, this.recipientImage, this.roomId, this.lastMessageId, this.lastMessageText, this.lastMessageDate, this.contactId, this.unreadMessageCount],
                         (_, res) => resolve(res),
                         (_, err) => reject(err)
                     )
@@ -60,11 +64,13 @@ class Chat {
                                 recipientImage = ?,
                                 roomId = ?,
                                 lastMessageId = ?,
-                                lastMessageText = ?
-                                contactId = ?
+                                lastMessageText = ?,
+                                lastMessageDate =?
+                                contactId = ?,
+                                unreadMessageCount = ?
                             WHERE id = ?
                         `,
-                        [this.creator, this.recipientName, this.recipientNumber, this.recipientImage, this.roomId, this.lastMessageId, this.lastMessageText, this.contactId, this.id],
+                        [this.creator, this.recipientName, this.recipientNumber, this.recipientImage, this.roomId, this.lastMessageId, this.lastMessageText, this.lastMessageDate, this.contactId, this.id, this.unreadMessageCount],
                         (_, res) => resolve(res),
                         (_, err) => reject(err)
                     )
@@ -73,7 +79,7 @@ class Chat {
         })
         return promise
     }
-    static findOne(field, filterSign, value){
+    static findOne(field, filterSign, value) {
         const promise = new Promise((resolve, reject) => {
             db.transaction(tx => {
                 tx.executeSql(
@@ -82,7 +88,7 @@ class Chat {
                         WHERE ${field} ${filterSign} ?
                         LIMIT 1
                     `,
-                    [value], 
+                    [value],
                     (_, res) => resolve(res),
                     (_, err) => reject(err)
                 )
@@ -90,16 +96,30 @@ class Chat {
         })
         return promise
     }
-    static findAll(){
+    static findAll() {
         const promise = new Promise((resolve, reject) => {
             db.transaction(tx => {
                 tx.executeSql(
                     `
                         SELECT * FROM chat
                     `,
-                    [], 
+                    [],
                     (_, res) => resolve(res),
                     (_, err) => reject(err)
+                )
+            })
+        })
+        return promise
+    }
+    static markAsRead(id) {
+        const promise = new Promise((resolve, reject) => {
+            db.transaction(tx => {
+                tx.executeSql(
+                    `
+                            UPDATE chat
+                            SET unreadMessageCount = 0
+                            WHERE id = ?
+                        `, [id], () => resolve(), (_, err) => reject(err)
                 )
             })
         })

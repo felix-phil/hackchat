@@ -206,21 +206,23 @@ export const syncContacts = () => {
 			const resData = await res.json()
 			// console.log(resData)
 			const contacts = resData.contacts
+			const contactsInLocalDB = await Contact.findAll()
 			if(contacts.length > 0){
 				for(const contact of contacts){
-					const contactExistsInLocalDB = await Contact.findOne("contactSystemId", contact.contactSystemId)
+					const contactExistsInLocalDB = contactsInLocalDB.find(con => con.contactSystemId === contact.contactSystemId)
+					// const contactExistsInLocalDB = await Contact.findOne("contactSystemId", "==", contact.contactSystemId.toString())
 					// console.log(contactExistsInLocalDB.phoneNumber)
 					if(!contactExistsInLocalDB){
 						const newContact = new Contact({
-							firstName: contact.firstName,
-							lastName: contact.lastName,
+							firstName: contact.firstName || "First Name",
+							lastName: contact.lastName || "Last Name",
 							contactSystemId: contact.contactSystemId,
 							phoneNumber: contact.phone,
-							name: contact.aliasName,
+							name: contact.aliasName || contact.phone,
 							imageUrl: contact.image,
 							status: contact.status
 						})
-						const saved = await newContact.save()
+						const saved =await newContact.save()
 						// console.log(saved)
 					}else{
 						const updateContact = new Contact({

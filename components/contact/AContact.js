@@ -8,6 +8,7 @@ const AContact = (props) => {
     return (
         <List.Item
             title={props.contact.name}
+            titleStyle={{ fontWeight: "bold" }}
             description={props.contact.status}
             onPress={props.handlePress}
             left={prop => (

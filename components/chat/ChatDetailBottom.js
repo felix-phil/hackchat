@@ -2,15 +2,37 @@ import React, { useState } from 'react';
 import { BottomNavigation, IconButton, Text, TextInput, useTheme } from 'react-native-paper';
 import { View, StyleSheet, Dimensions, KeyboardAvoidingView, Platform, ToastAndroid } from "react-native"
 
-const ChatBottom = ({ showOtherMessageType }) => {
+// import EmojiBoard from "react-native-emoji-board"
+
+const ChatBottom = ({ showOtherMessageType, messageText, setMessageText, submitHandler }) => {
     // const [index, setIndex] = useState(0);
     const theme = useTheme()
     const [emoji, setEmoji] = useState(false)
     const enterKey = "send"
+    const [isTextMessage, setIsTextMessage] = useState(false)
     const toggleEmoji = () => {
-        ToastAndroid.show('Coming Soon', ToastAndroid.SHORT)
+        // ToastAndroid.show('Coming Soon', ToastAndroid.SHORT)
+        setEmoji(prev => !prev)
     }
-
+    const onTextChange = (text) => {
+        if (text.trim() !== "") {
+            setMessageText(text)
+            if (!isTextMessage) {
+                setIsTextMessage(true)
+            }
+        } else {
+            setMessageText(text)
+            if (isTextMessage) {
+                setIsTextMessage(false)
+            }
+        }
+    }
+    const onSubmitHandler = () => {
+        if(!isTextMessage){
+            return
+        }
+        submitHandler()
+    }
     return (
         <KeyboardAvoidingView behavior={Platform.OS === "android" ? "padding" : "height"} style={styles.keyview}>
             <View style={styles.textInputCont}>
@@ -25,15 +47,24 @@ const ChatBottom = ({ showOtherMessageType }) => {
                     placeholder="Type in a message"
                     returnKeyType="send"
                     // returnKeyLabel="Send"
+                    value={messageText}
+                    onChangeText={onTextChange}
                     left={<TextInput.Icon name="emoticon" onPress={toggleEmoji} color={theme.colors.primary} />}
                     right={<TextInput.Icon name="attachment" onPress={showOtherMessageType} color={theme.colors.primary} />}
                 />
                 <IconButton
-                    icon="send"
+                    icon={isTextMessage ? "send" : "microphone"}
                     color="white"
-                    style={{ backgroundColor: theme.colors.primary, padding: 10 }} onPress={() => { }} size={30}
+                    style={{ backgroundColor: theme.colors.primary }}
+                    onPress={onSubmitHandler}
+                    size={30}
+                    accessibilityLabel="Send"
+                    animated={true}
                 />
             </View>
+            {/* <EmojiBoard 
+                onClick={emoji => console.log(emoji)}
+            /> */}
         </KeyboardAvoidingView>
     );
 };

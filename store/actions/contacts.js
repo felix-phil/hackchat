@@ -9,7 +9,8 @@ export const setContacts = () => {
     return async dispatch => {
         try {
             const contacts = await Contact.findAll()
-            dispatch({ type: SET_CONTACTS, payload: contacts.rows._array })
+            // console.log(contacts)
+            dispatch({ type: SET_CONTACTS, payload: contacts })
         } catch (error) {
             throw error
         }
@@ -23,7 +24,7 @@ export const showPortalImage = (contact, routeName, { functionToHandleChat }) =>
         type: SHOW_PORTAL_IMAGE,
         payload: {
             routeName: routeName,
-            profileName: contact.name,
+            profileName: contact.name || contact.phone,
             profileImageUrl: contact.imageUrl,
             functionToHandleChat: functionToHandleChat
         }

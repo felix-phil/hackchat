@@ -1,0 +1,14 @@
+--2021-11-03 10:35:44--  https://google.com/
+Connecting to 192.168.43.1:8080... failed: Connection timed out.
+Retrying.
+
+--2021-11-03 10:37:55--  (try: 2)  https://google.com/
+Connecting to 192.168.43.1:8080... failed: Connection timed out.
+Retrying.
+
+--2021-11-03 10:40:07--  (try: 3)  https://google.com/
+Connecting to 192.168.43.1:8080... failed: Connection timed out.
+Retrying.
+
+--2021-11-03 10:42:21--  (try: 4)  https://google.com/
+Connecting to 192.168.43.1:8080... failed: Network is unreachable.

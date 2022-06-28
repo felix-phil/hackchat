@@ -1,5 +1,10 @@
 import db from "../helpers/db"
+import realm from "../helpers/realmdb";
+// import Realm from "realm"
+import uuid from "react-native-uuid"
+import ContactSchema from "../schemas/contacts";
 
+const modelName = ContactSchema.name
 class Contact {
     constructor({ contactSystemId, firstName, lastName, name, phoneNumber, imageUrl, status, id }) {
         this.id = id ? id : null;
@@ -34,6 +39,7 @@ class Contact {
         });
         return promise
     }
+
     save() {
         const promise = new Promise((resolve, reject) => {
             db.transaction(tx => {
@@ -71,16 +77,96 @@ class Contact {
 
         return promise
     }
+    // save(){
+    //     const promise = new Promise((resolve, reject) => {
+    //         if(!this.id){
+    //             try{
+    //                 let newObject;
+    //                 realm.write(() => {
+    //                     console.log("reached here")
+    //                     const uuidv4 = uuid.v4().toString()
+    //                     // const date = new Date()
+    //                     newObject = realm.create(modelName, {
+    //                         // id: uuidv4.concat(date.toISOString()),
+    //                         id: uuidv4,
+    //                         firstName: this.firstName,
+    //                         lastName: this.lastName,
+    //                         name: this.name,
+    //                         contactSystemId: this.contactSystemId,
+    //                         phoneNumber: this.phoneNumber,
+    //                         imageUrl: this.imageUrl,
+    //                         status: this.status
+    //                     })
+    //                 })
+    //                 resolve(newObject)
+    //             }catch(err){
+    //                 reject(err)
+    //             }
+    //         }else{
+    //             try{
+    //                 // let updatedContact;
+    //                 const allContacts = realm.objects(modelName);
+    //                 const id = new UUID(this.id)
+    //                 const filteredContacts = allContacts.filtered(`id == '${this.id}'`)
+    //                 realm.write(()=> {
+    //                     filteredContacts[0].firstName = this.firstName
+    //                     filteredContacts[0].lastName = this.lastName
+    //                     filteredContacts[0].name = this.name
+    //                     filteredContacts[0].contactSystemId = this.contactSystemId
+    //                     filteredContacts[0].phoneNumber = this.phoneNumber
+    //                     filteredContacts[0].imageUrl = this.imageUrl
+    //                     filteredContacts[0].status = this.status
+    //                 })
+    //                 resolve(filteredContacts[0])
+    //             }catch(err){
+    //                 reject(err)
+    //             }
+    //         }
+    //     })
+    //     return promise
+    // }
     static findAll() {
         const promise = new Promise((resolve, reject) => {
             db.transaction(tx => {
                 tx.executeSql(
-                    `SELECT * FROM contacts`, [], (_, result) => resolve(result), (_, err) => reject(err)
+                    `SELECT * FROM contacts ORDER BY name ASC`, [], (_, result) => resolve(result.rows._array), (_, err) => reject(err)
                 )
             })
         })
         return promise
     }
+    // static findAll(){
+    //     const promise = new Promise((resolve, reject) => {
+    //         try{
+    //             const contacts = realm.objects(modelName)
+    //             resolve(contacts)
+    //         }catch(err){
+    //             reject(err)
+    //         }
+    //     })
+    //     return promise
+    // }
+    // static findOne(field, operand, value){
+    //     /*
+    //      field: Name of field in database
+    //      operand: Either ==|>|<|>=|<=|!=
+    //      value: Value to filter for 
+    //      */
+    //     const promise = new Promise((resolve, reject) => {
+    //         try{
+    //             const contacts = realm.objects(modelName)
+    //             const filteredContacts = contacts.filtered(`${field} ${operand} '${value}'`)
+    //             if(filteredContacts.length > 0){
+    //                 resolve(filteredContacts[0])
+    //             }else{
+    //                 resolve(null)
+    //             }
+    //         }catch(err){
+    //             reject(err)
+    //         }
+    //     })
+    //     return promise
+    // }
     static findOne(field, value) {
         const promise = new Promise((resolve, reject) => {
             db.transaction(tx => {
@@ -103,7 +189,7 @@ class Contact {
                             this.imageUrl = contact.imageUrl
                             this.status = contact.status
 
-                            resolve(this)
+                            resolve(contact)
                         }else{
                             resolve(null)
                         }
